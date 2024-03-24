@@ -1,0 +1,68 @@
+import pygame
+import sys
+
+FPS = 60
+WIN_WIDTH = 600
+WIN_HEIGHT = 400
+WHITE = (255, 255, 255)
+ORANGE = (255, 150, 100)
+
+clock = pygame.time.Clock()
+sc = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+
+# радиус будущего круга
+r = 10
+# координаты круга
+# начинаем с левого нижнего угла
+x = r
+y = WIN_HEIGHT - r
+
+# список для хранения координат следа от круга
+trail = []
+
+# направление движения (вправо, вверх, влево, вниз)
+direction = "right"
+
+# флаг для определения, прошел ли круг по периметру окна
+circle_completed = False
+
+while circle_completed == False:
+    for i in pygame.event.get():
+        if i.type == pygame.QUIT:
+            sys.exit()
+
+    # заливаем фон
+    sc.fill(WHITE)
+
+    # рисуем линии следа от круга
+    for point in trail:
+        pygame.draw.circle(sc, ORANGE, point, 2)
+
+    # добавляем текущие координаты круга в список следа
+    trail.append((x, y))
+
+    # рисуем круг
+    pygame.draw.circle(sc, ORANGE, (x, y), r)
+
+    # обновляем окно
+    pygame.display.update()
+
+    if direction == "right":
+        x += 2
+        if x >= WIN_WIDTH - r:
+            direction = "up"
+    elif direction == "up":
+        y -= 2
+        if y <= r:
+            direction = "left"
+    elif direction == "left":
+        x -= 2
+        if x <= r:
+            direction = "down"
+    elif direction == "down":
+        y += 2
+        if y >= WIN_HEIGHT - r:
+            direction = "right"
+            circle_completed = True
+
+    clock.tick(FPS)
